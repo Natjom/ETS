@@ -11,7 +11,6 @@
 
 // Proposez l’algorithme complet
 // Voici :
-
 import java.util.Scanner;
 
 public class Exercice2 {
