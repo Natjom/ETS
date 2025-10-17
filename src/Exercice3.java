@@ -1,141 +1,124 @@
-/*
-Séveloppez un système de gestion simplifiée d’inventaire qui :
-    Gère un tableau de produits (nom, quantité, prix)
-    Propose un menu avec les options :
-        Ajouter un produit
-        Rechercher un produit
-        Modifier la quantité d’un produit
-        Calculer la valeur totale de l’inventaire
-        Afficher tous les produits
-        Quitter
-    Valide les données saisies
-    Gère les cas d’erreur (produit non trouvé, quantité négative, etc.)
-*/
+void main() {
+    Scanner scanner = new Scanner(System.in);
 
-import java.util.Scanner;
-public class Exercice3 {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    String[] noms = new String[100];
+    int[] quantites = new int[100];
+    double[] prix = new double[100];
+    int nbProduits = 0;
 
-        String[] noms = new String[100];
-        int[] quantites = new int[100];
-        double[] prix = new double[100];
-        int nbProduits = 0;
+    int choix;
 
-        int choix;
+    do {
+        IO.println("\n=== MENU INVENTAIRE ===");
+        IO.println("1. Ajouter un produit");
+        IO.println("2. Rechercher un produit");
+        IO.println("3. Modifier la quantité d’un produit");
+        IO.println("4. Calculer la valeur totale de l’inventaire");
+        IO.println("5. Afficher tous les produits");
+        IO.println("6. Quitter");
+        IO.print("Votre choix : ");
+        choix = scanner.nextInt();
+        scanner.nextLine();
 
-        do {
-            System.out.println("\n=== MENU INVENTAIRE ===");
-            System.out.println("1. Ajouter un produit");
-            System.out.println("2. Rechercher un produit");
-            System.out.println("3. Modifier la quantité d’un produit");
-            System.out.println("4. Calculer la valeur totale de l’inventaire");
-            System.out.println("5. Afficher tous les produits");
-            System.out.println("6. Quitter");
-            System.out.print("Votre choix : ");
-            choix = scanner.nextInt();
-            scanner.nextLine();
+        switch (choix) {
+            case 1:
+                if (nbProduits >= 100) {
+                    IO.println("Inventaire plein !");
+                    break;
+                }
+                IO.print("Nom du produit : ");
+                String nom = scanner.nextLine();
 
-            switch (choix) {
-                case 1:
-                    if (nbProduits >= 100) {
-                        System.out.println("Inventaire plein !");
+                IO.print("Quantité : ");
+                int qte = scanner.nextInt();
+                if (qte < 0) {
+                    IO.println("Erreur : quantité négative interdite.");
+                    break;
+                }
+
+                IO.print("Prix unitaire : ");
+                double p = scanner.nextDouble();
+                if (p < 0) {
+                    IO.println("Erreur : prix négatif interdit.");
+                    break;
+                }
+
+                noms[nbProduits] = nom;
+                quantites[nbProduits] = qte;
+                prix[nbProduits] = p;
+                nbProduits++;
+
+                IO.println("Produit ajouté avec succès !");
+                break;
+
+            case 2:
+                IO.print("Nom du produit à rechercher : ");
+                String recherche = scanner.nextLine();
+                boolean trouve = false;
+                for (int i = 0; i < nbProduits; i++) {
+                    if (noms[i].equalsIgnoreCase(recherche)) {
+                        IO.println("→ " + noms[i] + " | Quantité : " + quantites[i] + " | Prix : " + prix[i] + "€");
+                        trouve = true;
                         break;
                     }
-                    System.out.print("Nom du produit : ");
-                    String nom = scanner.nextLine();
+                }
+                if (!trouve) {
+                    IO.println("Produit non trouvé.");
+                }
+                break;
 
-                    System.out.print("Quantité : ");
-                    int qte = scanner.nextInt();
-                    if (qte < 0) {
-                        System.out.println("Erreur : quantité négative interdite.");
+            case 3:
+                IO.print("Nom du produit à modifier : ");
+                String modif = scanner.nextLine();
+                boolean modifie = false;
+                for (int i = 0; i < nbProduits; i++) {
+                    if (noms[i].equalsIgnoreCase(modif)) {
+                        IO.print("Nouvelle quantité : ");
+                        int nouvelleQte = scanner.nextInt();
+                        if (nouvelleQte < 0) {
+                            IO.println("Erreur : quantité négative interdite.");
+                        } else {
+                            quantites[i] = nouvelleQte;
+                            IO.println("Quantité mise à jour !");
+                        }
+                        modifie = true;
                         break;
                     }
+                }
+                if (!modifie) {
+                    IO.println("Produit non trouvé.");
+                }
+                break;
 
-                    System.out.print("Prix unitaire : ");
-                    double p = scanner.nextDouble();
-                    if (p < 0) {
-                        System.out.println("Erreur : prix négatif interdit.");
-                        break;
-                    }
+            case 4:
+                double total = 0;
+                for (int i = 0; i < nbProduits; i++) {
+                    total += quantites[i] * prix[i];
+                }
+                IO.println("Valeur totale de l’inventaire : " + total + "€");
+                break;
 
-                    noms[nbProduits] = nom;
-                    quantites[nbProduits] = qte;
-                    prix[nbProduits] = p;
-                    nbProduits++;
-
-                    System.out.println("Produit ajouté avec succès !");
-                    break;
-
-                case 2:
-                    System.out.print("Nom du produit à rechercher : ");
-                    String recherche = scanner.nextLine();
-                    boolean trouve = false;
+            case 5:
+                if (nbProduits == 0) {
+                    IO.println("Aucun produit enregistré.");
+                } else {
+                    IO.println("\n--- Liste des produits ---");
                     for (int i = 0; i < nbProduits; i++) {
-                        if (noms[i].equalsIgnoreCase(recherche)) {
-                            System.out.println("→ " + noms[i] + " | Quantité : " + quantites[i] + " | Prix : " + prix[i] + "€");
-                            trouve = true;
-                            break;
-                        }
+                        IO.println((i + 1) + ". " + noms[i] + " | Quantité : " + quantites[i] + " | Prix : " + prix[i] + "€");
                     }
-                    if (!trouve) {
-                        System.out.println("Produit non trouvé.");
-                    }
-                    break;
+                }
+                break;
 
-                case 3:
-                    System.out.print("Nom du produit à modifier : ");
-                    String modif = scanner.nextLine();
-                    boolean modifie = false;
-                    for (int i = 0; i < nbProduits; i++) {
-                        if (noms[i].equalsIgnoreCase(modif)) {
-                            System.out.print("Nouvelle quantité : ");
-                            int nouvelleQte = scanner.nextInt();
-                            if (nouvelleQte < 0) {
-                                System.out.println("Erreur : quantité négative interdite.");
-                            } else {
-                                quantites[i] = nouvelleQte;
-                                System.out.println("Quantité mise à jour !");
-                            }
-                            modifie = true;
-                            break;
-                        }
-                    }
-                    if (!modifie) {
-                        System.out.println("Produit non trouvé.");
-                    }
-                    break;
+            case 6:
+                IO.println("Fermeture du programme...");
+                break;
 
-                case 4:
-                    double total = 0;
-                    for (int i = 0; i < nbProduits; i++) {
-                        total += quantites[i] * prix[i];
-                    }
-                    System.out.println("Valeur totale de l’inventaire : " + total + "€");
-                    break;
+            default:
+                IO.println("Choix invalide. Veuillez recommencer.");
+        }
 
-                case 5:
-                    if (nbProduits == 0) {
-                        System.out.println("Aucun produit enregistré.");
-                    } else {
-                        System.out.println("\n--- Liste des produits ---");
-                        for (int i = 0; i < nbProduits; i++) {
-                            System.out.println((i + 1) + ". " + noms[i] + " | Quantité : " + quantites[i] + " | Prix : " + prix[i] + "€");
-                        }
-                    }
-                    break;
+    } while (choix != 6);
 
-                case 6:
-                    System.out.println("Fermeture du programme...");
-                    break;
-
-                default:
-                    System.out.println("Choix invalide. Veuillez recommencer.");
-            }
-
-        } while (choix != 6);
-
-        scanner.close();
-    }
+    scanner.close();
 }
 
