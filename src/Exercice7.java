@@ -3,13 +3,8 @@ void main() {
 
     System.out.print("Combien de lignes : ");
 
-    int i = sc.nextInt();
+    int n = sc.nextInt();
 
-    printStars(i);
-
-}
-
-private static void printStars(int n) {
     for (int i = 1; i <= n; i++) {
         for (int j = 0; j < n - i; j++) {
             System.out.print(" ");
